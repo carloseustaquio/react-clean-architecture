@@ -4,3 +4,5 @@ coverage
 jest.config.js
 webpack.config.js
 public
+*.scss
+sass-module.d.ts
