@@ -1,4 +1,9 @@
 {
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
     "env": {
         "browser": true,
         "es2021": true
@@ -22,5 +27,8 @@
         "react",
         "@typescript-eslint"
     ],
-    "rules": {}
+    "rules": {
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error"
+    }
 }
