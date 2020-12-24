@@ -22,7 +22,5 @@
         "react",
         "@typescript-eslint"
     ],
-    "rules": {
-        "@typescript-eslint/ban-types": ["off"]
-    }
+    "rules": {}
 }
