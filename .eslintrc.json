@@ -4,8 +4,11 @@
         "es2021": true
     },
     "extends": [
+        "eslint:recommended",
         "plugin:react/recommended",
-        "airbnb"
+        "plugin:@typescript-eslint/recommended",
+        "prettier",
+        "prettier/react"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -19,8 +22,5 @@
         "react",
         "@typescript-eslint"
     ],
-    "rules": {
-        "@typescript-eslint/consistent-type-definitions": "off",
-        "@typescript-eslint/strict-boolean-expressions": "off"
-    }
+    "rules": {}
 }
