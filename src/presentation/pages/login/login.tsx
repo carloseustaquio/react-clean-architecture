@@ -8,15 +8,14 @@ import {
 } from "@/presentation/components";
 import Context from "@/presentation/contexts/form/form-context";
 
-type State = {
-  isLoading: boolean;
-  errorMessage: string;
-};
-
 const Login: React.FC = () => {
-  const [state] = useState<State>({
+  const [state] = useState({
     isLoading: false,
-    errorMessage: "",
+    errors: {
+      email: "Campo obrigatório",
+      password: "Campo obrigatório",
+      form: "",
+    },
   });
 
   return (
