@@ -6,9 +6,11 @@ import {
   RenderResult,
   fireEvent,
   cleanup,
+  waitFor,
 } from "@testing-library/react";
 import Login from "./login";
 import { ValidationStub, AuthenticationSpy } from "@/presentation/test";
+import { InvalidCredentialsError } from "@/domain/errors";
 
 type SutTypes = {
   sut: RenderResult;
@@ -49,7 +51,7 @@ const populatePasswordField = (
   });
 };
 
-const sumulateValidSubmit = (
+const simulateValidSubmit = (
   sut: RenderResult,
   email: string = faker.internet.email(),
   password: string = faker.internet.password()
@@ -139,7 +141,7 @@ describe("Login Component", () => {
 
   test("Should show spinner on submit", () => {
     const { sut } = makeSut();
-    sumulateValidSubmit(sut);
+    simulateValidSubmit(sut);
 
     const spinner = sut.getByTestId("spinner");
     expect(spinner).toBeTruthy();
@@ -149,15 +151,15 @@ describe("Login Component", () => {
     const { sut, authenticationSpy } = makeSut();
     const password = faker.internet.password();
     const email = faker.internet.email();
-    sumulateValidSubmit(sut, email, password);
+    simulateValidSubmit(sut, email, password);
 
     expect(authenticationSpy.params).toEqual({ email, password });
   });
 
   test("Should call Authentication only once", () => {
     const { sut, authenticationSpy } = makeSut();
-    sumulateValidSubmit(sut);
-    sumulateValidSubmit(sut);
+    simulateValidSubmit(sut);
+    simulateValidSubmit(sut);
 
     expect(authenticationSpy.callsCount).toBe(1);
   });
@@ -171,5 +173,20 @@ describe("Login Component", () => {
     fireEvent.submit(sut.getByTestId("form"));
 
     expect(authenticationSpy.callsCount).toBe(0);
+  });
+
+  test("Should present error if validation fails", async () => {
+    const { sut, authenticationSpy } = makeSut();
+    const error = new InvalidCredentialsError();
+    jest.spyOn(authenticationSpy, "auth").mockRejectedValueOnce(error);
+    simulateValidSubmit(sut);
+
+    const errorWrap = sut.getByTestId("errorWrap");
+    await waitFor(() => errorWrap);
+
+    const formError = sut.getByTestId("form-error");
+    expect(formError.textContent).toBe(error.message);
+
+    expect(errorWrap.childElementCount).toBe(1);
   });
 });
