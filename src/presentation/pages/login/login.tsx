@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import Styles from "./login-styles.scss";
 import {
   Footer,
@@ -27,6 +27,7 @@ const Login: React.FC<Props> = ({ authentication, validation }: Props) => {
       form: "",
     },
   });
+  const history = useHistory();
 
   const handleDisableButton = (): boolean => {
     return !!(state.errors.password || state.errors.email);
@@ -50,6 +51,7 @@ const Login: React.FC<Props> = ({ authentication, validation }: Props) => {
         password: state.password,
       });
       localStorage.setItem("accessToken", account.accessToken);
+      history.replace("/");
     } catch (error) {
       setState({
         ...state,
