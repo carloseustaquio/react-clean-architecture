@@ -57,23 +57,25 @@ const populatePasswordField = (
   });
 };
 
-const simulateValidSubmit = (
+const simulateValidSubmit = async (
   sut: RenderResult,
   email: string = faker.internet.email(),
   password: string = faker.internet.password()
-): void => {
+): Promise<void> => {
   populateEmailField(sut, email);
   populatePasswordField(sut, password);
 
-  const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
-  fireEvent.click(submitButton);
+  const form = sut.getByTestId("form");
+  fireEvent.submit(form);
+
+  await waitFor(() => form);
 };
 
 const getFieldStatus = (sut: RenderResult, fieldName: string): HTMLElement => {
   return sut.getByTestId(`${fieldName}-status`);
 };
 
-const expectValidStatus = (sut: RenderResult, fieldName: string) => {
+const expectValidStatus = (sut: RenderResult, fieldName: string): void => {
   const fieldStatus = getFieldStatus(sut, fieldName);
   expect(fieldStatus.title).toBe("Tudo certo!");
   expect(fieldStatus.textContent).toBe("🟢");
@@ -83,10 +85,38 @@ const expectInvalidStatus = (
   sut: RenderResult,
   fieldName: string,
   validationError: string
-) => {
+): void => {
   const fieldStatus = getFieldStatus(sut, fieldName);
   expect(fieldStatus.title).toBe(validationError);
   expect(fieldStatus.textContent).toBe("🔴");
+};
+
+const testErrorWrapChildCount = (sut: RenderResult, count: number): void => {
+  const errorWrap = sut.getByTestId("errorWrap");
+  expect(errorWrap.childElementCount).toBe(count);
+};
+
+const testElementExists = (sut: RenderResult, fieldName: string): void => {
+  const el = sut.getByTestId(fieldName);
+  expect(el).toBeTruthy();
+};
+
+const testTextContent = (
+  sut: RenderResult,
+  fieldName: string,
+  text: string
+): void => {
+  const el = sut.getByTestId(fieldName);
+  expect(el.textContent).toBe(text);
+};
+
+const testButtonIsDisabled = (
+  sut: RenderResult,
+  fieldName: string,
+  isDisabled: boolean
+): void => {
+  const button = sut.getByTestId(fieldName) as HTMLButtonElement;
+  expect(button.disabled).toBe(isDisabled);
 };
 
 describe("Login Component", () => {
@@ -100,10 +130,8 @@ describe("Login Component", () => {
     const { sut } = makeSut({
       validationError,
     });
-    const errorWrap = sut.getByTestId("errorWrap");
-    expect(errorWrap.childElementCount).toBe(0);
-    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
-    expect(submitButton.disabled).toBe(true);
+    testErrorWrapChildCount(sut, 0);
+    testButtonIsDisabled(sut, "submit", true);
     expectInvalidStatus(sut, "email", validationError);
     expectInvalidStatus(sut, "password", validationError);
   });
@@ -144,42 +172,39 @@ describe("Login Component", () => {
     populateEmailField(sut);
     populatePasswordField(sut);
 
-    const submitButton = sut.getByTestId("submit") as HTMLButtonElement;
-    expect(submitButton.disabled).toBe(false);
+    testButtonIsDisabled(sut, "submit", false);
   });
 
-  test("Should show spinner on submit", () => {
+  test("Should show spinner on submit", async () => {
     const { sut } = makeSut();
-    simulateValidSubmit(sut);
+    await simulateValidSubmit(sut);
 
-    const spinner = sut.getByTestId("spinner");
-    expect(spinner).toBeTruthy();
+    testElementExists(sut, "spinner");
   });
 
-  test("Should call Authentication with correct values", () => {
+  test("Should call Authentication with correct values", async () => {
     const { sut, authenticationSpy } = makeSut();
     const password = faker.internet.password();
     const email = faker.internet.email();
-    simulateValidSubmit(sut, email, password);
+    await simulateValidSubmit(sut, email, password);
 
     expect(authenticationSpy.params).toEqual({ email, password });
   });
 
-  test("Should call Authentication only once", () => {
+  test("Should call Authentication only once", async () => {
     const { sut, authenticationSpy } = makeSut();
-    simulateValidSubmit(sut);
-    simulateValidSubmit(sut);
+    await simulateValidSubmit(sut);
+    await simulateValidSubmit(sut);
 
     expect(authenticationSpy.callsCount).toBe(1);
   });
 
-  test("Should not call Authentication if form is invalid", () => {
+  test("Should not call Authentication if form is invalid", async () => {
     const validationError = faker.random.words(2);
     const { sut, authenticationSpy } = makeSut({
       validationError,
     });
-    populateEmailField(sut);
-    fireEvent.submit(sut.getByTestId("form"));
+    await simulateValidSubmit(sut);
 
     expect(authenticationSpy.callsCount).toBe(0);
   });
@@ -188,21 +213,15 @@ describe("Login Component", () => {
     const { sut, authenticationSpy } = makeSut();
     const error = new InvalidCredentialsError();
     jest.spyOn(authenticationSpy, "auth").mockRejectedValueOnce(error);
-    simulateValidSubmit(sut);
+    await simulateValidSubmit(sut);
 
-    const errorWrap = sut.getByTestId("errorWrap");
-    await waitFor(() => errorWrap);
-
-    const formError = sut.getByTestId("form-error");
-    expect(formError.textContent).toBe(error.message);
-
-    expect(errorWrap.childElementCount).toBe(1);
+    testTextContent(sut, "form-error", error.message);
+    testErrorWrapChildCount(sut, 1);
   });
 
   test("Should add accessToken to localstorage on success", async () => {
     const { sut, authenticationSpy } = makeSut();
-    simulateValidSubmit(sut);
-    await waitFor(() => sut.getByTestId("form"));
+    await simulateValidSubmit(sut);
 
     expect(localStorage.setItem).toHaveBeenCalledWith(
       "accessToken",
