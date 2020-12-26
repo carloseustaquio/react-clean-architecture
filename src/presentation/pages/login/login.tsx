@@ -25,6 +25,10 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
     },
   });
 
+  const handleDisableButton = (): boolean => {
+    return !!(state.errors.password || state.errors.email);
+  };
+
   useEffect(() => {
     setState({
       ...state,
@@ -52,7 +56,7 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
             data-testid="submit"
             className={Styles.submit}
             type="submit"
-            disabled
+            disabled={handleDisableButton()}
           >
             Enviar
           </button>
