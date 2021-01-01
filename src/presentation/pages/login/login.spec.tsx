@@ -225,7 +225,7 @@ describe("Login Component", () => {
     testErrorWrapChildCount(sut, 1);
   });
 
-  test("Should call saveAcessToken with success", async () => {
+  test("Should call saveAcessToken on success", async () => {
     const { sut, authenticationSpy, saveAccessTokenMock } = makeSut();
     await simulateValidSubmit(sut);
 
@@ -234,6 +234,15 @@ describe("Login Component", () => {
     );
     expect(history.length).toBe(1);
     expect(history.location.pathname).toBe("/");
+  });
+
+  test("Should present error if saveAcessToken fails", async () => {
+    const { sut, saveAccessTokenMock } = makeSut();
+    const error = new InvalidCredentialsError();
+    jest.spyOn(saveAccessTokenMock, "save").mockRejectedValueOnce(error);
+    await simulateValidSubmit(sut);
+    testTextContent(sut, "form-error", error.message);
+    testErrorWrapChildCount(sut, 1);
   });
 
   test("Should go to signup page", async () => {
