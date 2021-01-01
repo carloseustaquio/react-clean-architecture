@@ -2,8 +2,10 @@ import { RemoteAddAccount } from "./remote-add-account";
 import { HttpPostClientSpy } from "@/data/test";
 import { AddAccountParams } from "@/domain/usecases";
 import { AccountModel } from "@/domain/models";
-import faker from "faker";
+import { HttpStatusCode } from "@/data/protocols/http";
 import { mockAddAccountParams } from "@/domain/test";
+import faker from "faker";
+import { EmailInUseError } from "@/domain/errors";
 
 type SutTypes = {
   sut: RemoteAddAccount;
@@ -34,5 +36,15 @@ describe("RemoteAddAccount", () => {
     const addAccountParams = mockAddAccountParams();
     await sut.add(addAccountParams);
     expect(httpPostClientSpy.body).toEqual(addAccountParams);
+  });
+
+  test("should throw EmailInUseError if HttpPostClient return 401", async () => {
+    const { sut, httpPostClientSpy } = makeSut();
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.forbidden,
+    };
+    const addAccountParams = mockAddAccountParams();
+    const promise = sut.add(addAccountParams);
+    await expect(promise).rejects.toThrow(new EmailInUseError());
   });
 });
