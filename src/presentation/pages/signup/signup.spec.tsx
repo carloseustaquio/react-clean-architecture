@@ -27,12 +27,8 @@ describe("SignUp Component", () => {
     Helper.testButtonIsDisabled(sut, "submit", true);
     Helper.expectInvalidStatus(sut, "name", validationError);
     Helper.expectInvalidStatus(sut, "email", validationError);
-    Helper.expectInvalidStatus(sut, "password", "Campo obrigatório");
-    Helper.expectInvalidStatus(
-      sut,
-      "passwordConfirmation",
-      "Campo obrigatório"
-    );
+    Helper.expectInvalidStatus(sut, "password", validationError);
+    Helper.expectInvalidStatus(sut, "passwordConfirmation", validationError);
   });
 
   test("Should show name error if Validation fails", () => {
@@ -51,5 +47,23 @@ describe("SignUp Component", () => {
     });
     Helper.populateField(sut, "email");
     Helper.expectInvalidStatus(sut, "email", validationError);
+  });
+
+  test("Should show password error if Validation fails", () => {
+    const validationError = faker.random.words(2);
+    const { sut } = makeSut({
+      validationError,
+    });
+    Helper.populateField(sut, "password");
+    Helper.expectInvalidStatus(sut, "password", validationError);
+  });
+
+  test("Should show passwordConfirmation error if Validation fails", () => {
+    const validationError = faker.random.words(2);
+    const { sut } = makeSut({
+      validationError,
+    });
+    Helper.populateField(sut, "passwordConfirmation");
+    Helper.expectInvalidStatus(sut, "passwordConfirmation", validationError);
   });
 });
