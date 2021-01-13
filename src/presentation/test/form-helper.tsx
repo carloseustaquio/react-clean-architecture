@@ -29,6 +29,15 @@ export const expectInvalidStatus = (
   expect(fieldStatus.textContent).toBe("🔴");
 };
 
+export const expectValidStatus = (
+  sut: RenderResult,
+  fieldName: string
+): void => {
+  const fieldStatus = getFieldStatus(sut, fieldName);
+  expect(fieldStatus.title).toBe("Tudo certo!");
+  expect(fieldStatus.textContent).toBe("🟢");
+};
+
 export const getFieldStatus = (
   sut: RenderResult,
   fieldName: string

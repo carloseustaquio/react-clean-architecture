@@ -61,12 +61,6 @@ const simulateValidSubmit = async (
   await waitFor(() => form);
 };
 
-const expectValidStatus = (sut: RenderResult, fieldName: string): void => {
-  const fieldStatus = Helper.getFieldStatus(sut, fieldName);
-  expect(fieldStatus.title).toBe("Tudo certo!");
-  expect(fieldStatus.textContent).toBe("🟢");
-};
-
 const testElementExists = (sut: RenderResult, fieldName: string): void => {
   const el = sut.getByTestId(fieldName);
   expect(el).toBeTruthy();
@@ -116,13 +110,13 @@ describe("Login Component", () => {
   test("Should show valid email state if validation succeeds", () => {
     const { sut } = makeSut();
     Helper.populateField(sut, "email");
-    expectValidStatus(sut, "email");
+    Helper.expectValidStatus(sut, "email");
   });
 
   test("Should show valid password state if validation succeeds", () => {
     const { sut } = makeSut();
     Helper.populateField(sut, "password");
-    expectValidStatus(sut, "password");
+    Helper.expectValidStatus(sut, "password");
   });
 
   test("Should enable submit button if form is valid", () => {
