@@ -26,7 +26,7 @@ describe("SignUp Component", () => {
     Helper.testChildCount(sut, "errorWrap", 0);
     Helper.testButtonIsDisabled(sut, "submit", true);
     Helper.expectInvalidStatus(sut, "name", validationError);
-    Helper.expectInvalidStatus(sut, "email", "Campo obrigatório");
+    Helper.expectInvalidStatus(sut, "email", validationError);
     Helper.expectInvalidStatus(sut, "password", "Campo obrigatório");
     Helper.expectInvalidStatus(
       sut,
@@ -42,5 +42,14 @@ describe("SignUp Component", () => {
     });
     Helper.populateField(sut, "name");
     Helper.expectInvalidStatus(sut, "name", validationError);
+  });
+
+  test("Should show email error if Validation fails", () => {
+    const validationError = faker.random.words(2);
+    const { sut } = makeSut({
+      validationError,
+    });
+    Helper.populateField(sut, "email");
+    Helper.expectInvalidStatus(sut, "email", validationError);
   });
 });
