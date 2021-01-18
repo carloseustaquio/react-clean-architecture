@@ -39,12 +39,21 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
     );
   };
 
+  const hasFormErrors = () => {
+    return (
+      state.errors.name ||
+      state.errors.email ||
+      state.errors.password ||
+      state.errors.passwordConfirmation
+    );
+  };
+
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
 
-    if (state.isLoading) return;
+    if (state.isLoading || hasFormErrors()) return;
 
     setState({
       ...state,
