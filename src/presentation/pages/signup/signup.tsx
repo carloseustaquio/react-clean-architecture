@@ -5,6 +5,7 @@ import {
   LoginHeader,
   Input,
   FormStatus,
+  SubmitButton,
 } from "@/presentation/components";
 import Context from "@/presentation/contexts/form/form-context";
 import { Validation } from "@/presentation/protocols/validation";
@@ -22,8 +23,10 @@ const SignUp: React.FC<Props> = ({
   addAccount,
   saveAccessToken,
 }: Props) => {
+  const history = useHistory();
   const [state, setState] = useState({
     isLoading: false,
+    isFormInvalid: true,
     name: "",
     email: "",
     password: "",
@@ -36,32 +39,13 @@ const SignUp: React.FC<Props> = ({
       passwordConfirmation: "",
     },
   });
-  const history = useHistory();
-
-  const handleDisableButton = (): boolean => {
-    return !!(
-      state.errors.name ||
-      state.errors.email ||
-      state.errors.password ||
-      state.errors.passwordConfirmation
-    );
-  };
-
-  const hasFormErrors = () => {
-    return (
-      state.errors.name ||
-      state.errors.email ||
-      state.errors.password ||
-      state.errors.passwordConfirmation
-    );
-  };
 
   const handleSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
 
-    if (state.isLoading || hasFormErrors()) return;
+    if (state.isLoading || state.isFormInvalid) return;
 
     setState({
       ...state,
@@ -89,17 +73,23 @@ const SignUp: React.FC<Props> = ({
   };
 
   useEffect(() => {
+    const name = validation.validate("name", state.name);
+    const email = validation.validate("email", state.email);
+    const password = validation.validate("password", state.email);
+    const passwordConfirmation = validation.validate(
+      "passwordConfirmation",
+      state.email
+    );
+
     setState({
       ...state,
+      isFormInvalid: !!(name || email || password || passwordConfirmation),
       errors: {
         ...state.errors,
-        name: validation.validate("name", state.name),
-        email: validation.validate("email", state.email),
-        password: validation.validate("password", state.email),
-        passwordConfirmation: validation.validate(
-          "passwordConfirmation",
-          state.email
-        ),
+        name,
+        email,
+        password,
+        passwordConfirmation,
       },
     });
   }, [state.name, state.email, state.password, state.passwordConfirmation]);
@@ -126,14 +116,7 @@ const SignUp: React.FC<Props> = ({
             name="passwordConfirmation"
             placeholder="Repita sua senha"
           />
-          <button
-            data-testid="submit"
-            className={Styles.submit}
-            type="submit"
-            disabled={handleDisableButton()}
-          >
-            Enviar
-          </button>
+          <SubmitButton text="Enviar" />
           <Link data-testid="link-login" to="/login" className={Styles.link}>
             Voltar para Login
           </Link>
