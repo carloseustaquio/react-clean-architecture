@@ -10,6 +10,7 @@
     "test:staged": "yarn test -- --findRelatedTests",
     "test:ci": "yarn test -- --coverage",
     "test:coveralls": "yarn test:ci && coveralls < coverage/lcov.info",
+    "test:cypress": "cypress open",
     "check:dependencies": "yarn-check -s -u"
   },
   "keywords": [],
@@ -29,6 +30,7 @@
     "clean-webpack-plugin": "^3.0.0",
     "coveralls": "^3.1.0",
     "css-loader": "^5.0.1",
+    "cypress": "^6.3.0",
     "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.1.0",

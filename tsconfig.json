@@ -15,10 +15,12 @@
     "paths": {
       "@/*": ["*"]
     },
+    "types": ["node", "jest"],
     "allowJs": true,
     "resolveJsonModule": true,
   },
   "include": [
     "src"
-  ]
+  ], 
+  "exclude": ["src/main/test/cypress"]
 }
