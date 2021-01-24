@@ -73,12 +73,18 @@ const SignUp: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    const name = validation.validate("name", state.name);
-    const email = validation.validate("email", state.email);
-    const password = validation.validate("password", state.email);
+    const formData = {
+      name: state.name,
+      email: state.email,
+      password: state.password,
+      passwordConfirmation: state.passwordConfirmation,
+    };
+    const name = validation.validate("name", formData);
+    const email = validation.validate("email", formData);
+    const password = validation.validate("password", formData);
     const passwordConfirmation = validation.validate(
       "passwordConfirmation",
-      state.email
+      formData
     );
 
     setState({

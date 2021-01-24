@@ -4,7 +4,8 @@ export class FieldValidationSpy implements FieldValidation {
   error: Error = null;
   constructor(readonly field: string) {}
 
-  validate(_value: string): Error {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  validate(_input: object): Error {
     return this.error;
   }
 }
