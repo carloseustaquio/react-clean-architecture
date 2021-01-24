@@ -23,6 +23,7 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
     password: "",
     passwordConfirmation: "",
     errors: {
+      form: "",
       name: "",
       email: "",
       password: "",
@@ -60,12 +61,22 @@ const SignUp: React.FC<Props> = ({ validation, addAccount }: Props) => {
       isLoading: true,
     });
 
-    await addAccount.add({
-      name: state.name,
-      email: state.email,
-      password: state.password,
-      passwordConfirmation: state.passwordConfirmation,
-    });
+    try {
+      await addAccount.add({
+        name: state.name,
+        email: state.email,
+        password: state.password,
+        passwordConfirmation: state.passwordConfirmation,
+      });
+    } catch (err) {
+      setState({
+        ...state,
+        errors: {
+          ...state.errors,
+          form: err.message,
+        },
+      });
+    }
   };
 
   useEffect(() => {
