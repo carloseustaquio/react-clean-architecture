@@ -61,15 +61,6 @@ const simulateValidSubmit = async (
   await waitFor(() => form);
 };
 
-const testTextContent = (
-  sut: RenderResult,
-  fieldName: string,
-  text: string
-): void => {
-  const el = sut.getByTestId(fieldName);
-  expect(el.textContent).toBe(text);
-};
-
 describe("Login Component", () => {
   afterEach(cleanup);
 
@@ -163,7 +154,7 @@ describe("Login Component", () => {
     jest.spyOn(authenticationSpy, "auth").mockRejectedValueOnce(error);
     await simulateValidSubmit(sut);
 
-    testTextContent(sut, "form-error", error.message);
+    Helper.testTextContent(sut, "form-error", error.message);
     Helper.testChildCount(sut, "errorWrap", 1);
   });
 
@@ -183,7 +174,7 @@ describe("Login Component", () => {
     const error = new InvalidCredentialsError();
     jest.spyOn(saveAccessTokenMock, "save").mockRejectedValueOnce(error);
     await simulateValidSubmit(sut);
-    testTextContent(sut, "form-error", error.message);
+    Helper.testTextContent(sut, "form-error", error.message);
     Helper.testChildCount(sut, "errorWrap", 1);
   });
 

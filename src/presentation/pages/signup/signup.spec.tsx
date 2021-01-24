@@ -46,15 +46,6 @@ const simulateValidSubmit = async (
   await waitFor(() => form);
 };
 
-const testTextContent = (
-  sut: RenderResult,
-  fieldName: string,
-  text: string
-): void => {
-  const el = sut.getByTestId(fieldName);
-  expect(el.textContent).toBe(text);
-};
-
 describe("SignUp Component", () => {
   test("Should start with initial state", () => {
     const validationError = faker.random.words();
@@ -184,7 +175,7 @@ describe("SignUp Component", () => {
     jest.spyOn(addAccountSpy, "add").mockRejectedValueOnce(error);
     await simulateValidSubmit(sut);
 
-    testTextContent(sut, "form-error", error.message);
+    Helper.testTextContent(sut, "form-error", error.message);
     Helper.testChildCount(sut, "errorWrap", 1);
   });
 });
