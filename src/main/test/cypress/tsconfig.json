@@ -3,10 +3,11 @@
     "noEmit": true,
     // be explicit about types included
     // to avoid clashing with Jest types
-    "types": ["cypress"]
+    "types": ["cypress"],
+    "esModuleInterop": true
   },
   "include": [
     "../../../../node_modules/cypress",
     "./*/*.ts"
-  ]
+  ],
 }
