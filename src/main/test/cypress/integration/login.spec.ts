@@ -51,36 +51,99 @@ describe("login", () => {
     cy.getByTestId("errorWrap").should("not.have.descendants");
   });
 
-  it("should present error if invalid credentials are provided", () => {
+  it("should present InvalidCredentialsError if on 401", () => {
+    cy.intercept(
+      {
+        method: "POST",
+        url: /login/,
+      },
+      {
+        statusCode: 401,
+        body: {
+          error: faker.random.words(),
+        },
+      }
+    );
     cy.getByTestId("email").focus().type(faker.internet.email());
     cy.getByTestId("password").focus().type(faker.internet.password(5));
     cy.getByTestId("submit").click();
-    cy.getByTestId("errorWrap")
-      .getByTestId("spinner")
-      .should("exist")
-      .getByTestId("form-error")
-      .should("not.exist")
-      .getByTestId("spinner")
-      .should("not.exist")
-      .getByTestId("form-error")
-      .should("contain.text", "Credenciais inválidas");
+    cy.getByTestId("spinner").should("not.exist");
+    cy.getByTestId("form-error").should(
+      "contain.text",
+      "Credenciais inválidas"
+    );
+    cy.url().should("eq", `${baseUrl}/login`);
+  });
+
+  it("should present UnexpectedError if 400, 404, 500", () => {
+    cy.intercept(
+      {
+        method: "POST",
+        url: /login/,
+      },
+      {
+        statusCode: faker.random.arrayElement([400, 500, 404]),
+        body: {
+          error: faker.random.words(),
+        },
+      }
+    );
+    cy.getByTestId("email").focus().type(faker.internet.email());
+    cy.getByTestId("password").focus().type(faker.internet.password(5));
+    cy.getByTestId("submit").click();
+    cy.getByTestId("spinner").should("not.exist");
+    cy.getByTestId("form-error").should(
+      "contain.text",
+      "Aconteceu um erro. Tente novamente mais tarde."
+    );
     cy.url().should("eq", `${baseUrl}/login`);
   });
 
   it("should present save AccessToken if valid credentials are provided", () => {
+    cy.intercept(
+      {
+        method: "POST",
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: {
+          accessToken: faker.random.uuid(),
+        },
+      }
+    );
     cy.getByTestId("email").focus().type("caeu227@gmail.com");
     cy.getByTestId("password").focus().type("123456");
     cy.getByTestId("submit").click();
-    cy.getByTestId("errorWrap")
-      .getByTestId("spinner")
-      .should("exist")
-      .getByTestId("form-error")
-      .should("not.exist")
-      .getByTestId("spinner")
-      .should("not.exist");
+    cy.getByTestId("form-error").should("not.exist");
+    cy.getByTestId("spinner").should("not.exist");
     cy.url().should("eq", `${baseUrl}/`);
     cy.window().then((window) =>
       assert.isOk(window.localStorage.getItem("accessToken"))
     );
+  });
+
+  it("should present save AccessToken if invalid return from api", () => {
+    cy.intercept(
+      {
+        method: "POST",
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: {
+          invalidProperty: faker.random.uuid(),
+        },
+      }
+    );
+    cy.getByTestId("email").focus().type("caeu227@gmail.com");
+    cy.getByTestId("password").focus().type("123456");
+    cy.getByTestId("submit").click();
+    cy.getByTestId("spinner").should("not.exist");
+    cy.getByTestId("form-error").should(
+      "contain.text",
+      "Aconteceu um erro. Tente novamente mais tarde."
+    );
+    cy.url().should("eq", `${baseUrl}/login`);
   });
 });
