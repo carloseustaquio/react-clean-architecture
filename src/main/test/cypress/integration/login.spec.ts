@@ -112,8 +112,8 @@ describe("login", () => {
         },
       }
     );
-    cy.getByTestId("email").focus().type("caeu227@gmail.com");
-    cy.getByTestId("password").focus().type("123456");
+    cy.getByTestId("email").focus().type(faker.internet.email());
+    cy.getByTestId("password").focus().type(faker.internet.password(6));
     cy.getByTestId("submit").click();
     cy.getByTestId("form-error").should("not.exist");
     cy.getByTestId("spinner").should("not.exist");
@@ -136,8 +136,8 @@ describe("login", () => {
         },
       }
     );
-    cy.getByTestId("email").focus().type("caeu227@gmail.com");
-    cy.getByTestId("password").focus().type("123456");
+    cy.getByTestId("email").focus().type(faker.internet.email());
+    cy.getByTestId("password").focus().type(faker.internet.password(6));
     cy.getByTestId("submit").click();
     cy.getByTestId("spinner").should("not.exist");
     cy.getByTestId("form-error").should(
