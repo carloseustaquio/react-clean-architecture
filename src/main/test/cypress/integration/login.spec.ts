@@ -167,4 +167,24 @@ describe("login", () => {
     cy.getByTestId("submit").dblclick();
     cy.get("@request.all").should("have.length", 1);
   });
+
+  it("should not call api if form is invalid", () => {
+    cy.intercept(
+      {
+        method: "POST",
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: {
+          invalidProperty: faker.random.uuid(),
+        },
+      }
+    ).as("request");
+    cy.getByTestId("email")
+      .focus()
+      .type(faker.internet.email())
+      .type("{enter}");
+    cy.get("@request.all").should("have.length", 0);
+  });
 });
