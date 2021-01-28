@@ -99,7 +99,7 @@ describe("login", () => {
     cy.url().should("eq", `${baseUrl}/login`);
   });
 
-  it("should present save AccessToken if valid credentials are provided", () => {
+  it("should save AccessToken if valid credentials are provided", () => {
     cy.intercept(
       {
         method: "POST",
@@ -123,7 +123,7 @@ describe("login", () => {
     );
   });
 
-  it("should present save AccessToken if invalid return from api", () => {
+  it("should not save AccessToken if invalid return from api", () => {
     cy.intercept(
       {
         method: "POST",
@@ -145,5 +145,24 @@ describe("login", () => {
       "Aconteceu um erro. Tente novamente mais tarde."
     );
     cy.url().should("eq", `${baseUrl}/login`);
+  });
+
+  it("should prevent multiple submits", () => {
+    cy.intercept(
+      {
+        method: "POST",
+        url: /login/,
+      },
+      {
+        statusCode: 200,
+        body: {
+          invalidProperty: faker.random.uuid(),
+        },
+      }
+    ).as("request");
+    cy.getByTestId("email").focus().type(faker.internet.email());
+    cy.getByTestId("password").focus().type(faker.internet.password(6));
+    cy.getByTestId("submit").dblclick();
+    cy.get("@request.all").should("have.length", 1);
   });
 });
