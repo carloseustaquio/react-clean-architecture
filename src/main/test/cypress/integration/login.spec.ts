@@ -137,8 +137,10 @@ describe("login", () => {
       }
     );
     cy.getByTestId("email").focus().type(faker.internet.email());
-    cy.getByTestId("password").focus().type(faker.internet.password(6));
-    cy.getByTestId("submit").click();
+    cy.getByTestId("password")
+      .focus()
+      .type(faker.internet.password(6))
+      .type("{enter}");
     cy.getByTestId("spinner").should("not.exist");
     cy.getByTestId("form-error").should(
       "contain.text",
