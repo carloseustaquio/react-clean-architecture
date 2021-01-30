@@ -24,25 +24,34 @@ export const expectInvalidStatus = (
   fieldName: string,
   validationError: string
 ): void => {
-  const fieldStatus = getFieldStatus(sut, fieldName);
-  expect(fieldStatus.title).toBe(validationError);
-  expect(fieldStatus.textContent).toBe("🔴");
+  const { wrap, field, label } = getFieldStatus(sut, fieldName);
+  expect(wrap.getAttribute("data-status")).toBe("invalid");
+  expect(field.title).toBe(validationError);
+  expect(label.title).toBe(validationError);
 };
 
 export const expectValidStatus = (
   sut: RenderResult,
   fieldName: string
 ): void => {
-  const fieldStatus = getFieldStatus(sut, fieldName);
-  expect(fieldStatus.title).toBe("Tudo certo!");
-  expect(fieldStatus.textContent).toBe("🟢");
+  const { wrap, field, label } = getFieldStatus(sut, fieldName);
+  expect(wrap.getAttribute("data-status")).toBe("valid");
+  expect(field.title).toBeFalsy();
+  expect(label.title).toBeFalsy();
 };
 
 export const getFieldStatus = (
   sut: RenderResult,
   fieldName: string
-): HTMLElement => {
-  return sut.getByTestId(`${fieldName}-status`);
+): { wrap: HTMLElement; field: HTMLElement; label: HTMLElement } => {
+  const wrap = sut.getByTestId(`${fieldName}-wrap`);
+  const field = sut.getByTestId(`${fieldName}`);
+  const label = sut.getByTestId(`${fieldName}-label`);
+  return {
+    wrap,
+    field,
+    label,
+  };
 };
 
 export const populateField = (
