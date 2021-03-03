@@ -29,7 +29,7 @@ describe("login", () => {
     FormHelper.testInputStatus("email", "Valor inválido");
 
     cy.getByTestId("password").focus().type(faker.random.alphaNumeric(3));
-    FormHelper.testInputStatus("email", "Valor inválido");
+    FormHelper.testInputStatus("password", "Valor inválido");
 
     cy.getByTestId("submit").should("have.attr", "disabled");
     cy.getByTestId("errorWrap").should("not.have.descendants");
