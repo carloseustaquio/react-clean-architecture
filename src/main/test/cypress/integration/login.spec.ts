@@ -19,6 +19,9 @@ describe("login", () => {
 
     cy.getByTestId("password").should("have.attr", "readonly");
     FormHelper.testInputStatus("password", "Campo obrigatório");
+
+    cy.getByTestId("submit").should("have.attr", "disabled");
+    cy.getByTestId("errorWrap").should("not.have.descendants");
   });
 
   it("should present error state if form is invalid", () => {
