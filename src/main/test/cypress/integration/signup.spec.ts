@@ -4,7 +4,7 @@ import * as Http from "../support/signup-mocks";
 
 const simulateValidSubmit = (): void => {
   const password = faker.internet.password(7);
-  cy.getByTestId("name").focus().type(faker.internet.email());
+  cy.getByTestId("name").focus().type(faker.internet.userName());
   cy.getByTestId("email").focus().type(faker.internet.email());
   cy.getByTestId("password").focus().type(password);
   cy.getByTestId("passwordConfirmation").focus().type(password);
@@ -64,6 +64,22 @@ describe("signup", () => {
 
   it("should present UnexpectedError if 400, 404, 500", () => {
     Http.mockUnexpectedError();
+    simulateValidSubmit();
+    FormHelper.testFormError("Aconteceu um erro. Tente novamente mais tarde.");
+    FormHelper.testUrl("/signup");
+  });
+
+  it("should save AccessToken if valid credentials are provided", () => {
+    Http.mockOk();
+    simulateValidSubmit();
+    cy.getByTestId("form-error").should("not.exist");
+    cy.getByTestId("spinner").should("not.exist");
+    FormHelper.testUrl("/");
+    FormHelper.testLocalStorageItem("accessToken");
+  });
+
+  it("should not save AccessToken if invalid return from api", () => {
+    Http.mockInvalidData();
     simulateValidSubmit();
     FormHelper.testFormError("Aconteceu um erro. Tente novamente mais tarde.");
     FormHelper.testUrl("/signup");
