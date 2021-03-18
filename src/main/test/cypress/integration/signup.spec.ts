@@ -89,10 +89,19 @@ describe("signup", () => {
     FormHelper.testUrl("/signup");
   });
 
-  it.only("should prevent multiple submits", () => {
+  it("should prevent multiple submits", () => {
     Http.mockOk();
     populateFields();
     cy.getByTestId("submit").dblclick();
     FormHelper.testHttpCallsCount(1);
+  });
+
+  it("should not call api if form is invalid", () => {
+    Http.mockOk();
+    cy.getByTestId("email")
+      .focus()
+      .type(faker.internet.email())
+      .type("{enter}");
+    FormHelper.testHttpCallsCount(0);
   });
 });
