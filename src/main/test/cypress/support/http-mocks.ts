@@ -42,3 +42,18 @@ export const mockOk = (url: RegExp, method: string, response: any): void => {
     }
   ).as("request");
 };
+
+export const mockForbiddenError = (url: RegExp): void => {
+  cy.intercept(
+    {
+      method: "POST",
+      url,
+    },
+    {
+      statusCode: 403,
+      body: {
+        error: faker.random.words(),
+      },
+    }
+  ).as("request");
+};
