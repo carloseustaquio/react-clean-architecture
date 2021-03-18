@@ -61,4 +61,11 @@ describe("signup", () => {
     FormHelper.testFormError("Email já está em uso");
     FormHelper.testUrl("/signup");
   });
+
+  it("should present UnexpectedError if 400, 404, 500", () => {
+    Http.mockUnexpectedError();
+    simulateValidSubmit();
+    FormHelper.testFormError("Aconteceu um erro. Tente novamente mais tarde.");
+    FormHelper.testUrl("/signup");
+  });
 });
