@@ -2,12 +2,16 @@ import faker from "faker";
 import * as FormHelper from "../support/form-helper";
 import * as Http from "../support/signup-mocks";
 
-const simulateValidSubmit = (): void => {
+const populateFields = (): void => {
   const password = faker.internet.password(7);
   cy.getByTestId("name").focus().type(faker.internet.userName());
   cy.getByTestId("email").focus().type(faker.internet.email());
   cy.getByTestId("password").focus().type(password);
   cy.getByTestId("passwordConfirmation").focus().type(password);
+};
+
+const simulateValidSubmit = (): void => {
+  populateFields();
   cy.getByTestId("submit").click();
 };
 
@@ -83,5 +87,12 @@ describe("signup", () => {
     simulateValidSubmit();
     FormHelper.testFormError("Aconteceu um erro. Tente novamente mais tarde.");
     FormHelper.testUrl("/signup");
+  });
+
+  it.only("should prevent multiple submits", () => {
+    Http.mockOk();
+    populateFields();
+    cy.getByTestId("submit").dblclick();
+    FormHelper.testHttpCallsCount(1);
   });
 });
