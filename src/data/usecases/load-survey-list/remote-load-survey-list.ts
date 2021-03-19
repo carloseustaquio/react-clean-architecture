@@ -12,10 +12,13 @@ export class RemoteLoadSurveyList implements LoadSurveyList {
   async loadAll(): Promise<SurveyModel[]> {
     const httpResponse = await this.httpGetClient.get({ url: this.url });
 
-    if (httpResponse.statusCode !== HttpStatusCode.ok) {
-      throw new UnexpectedError();
+    switch (httpResponse.statusCode) {
+      case HttpStatusCode.ok:
+        return httpResponse.body;
+      case HttpStatusCode.noContent:
+        return [];
+      default:
+        throw new UnexpectedError();
     }
-
-    return httpResponse.body;
   }
 }
