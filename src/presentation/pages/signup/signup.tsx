@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Styles from "./signup.scss";
+import Styles from "./signup-styles.scss";
 import {
   Footer,
   LoginHeader,
