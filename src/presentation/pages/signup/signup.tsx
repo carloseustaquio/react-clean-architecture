@@ -101,7 +101,7 @@ const SignUp: React.FC<Props> = ({
   }, [state.name, state.email, state.password, state.passwordConfirmation]);
 
   return (
-    <div className={Styles.signup}>
+    <div className={Styles.signupWrap}>
       <LoginHeader />
       <Context.Provider value={{ state, setState }}>
         <form
