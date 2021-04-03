@@ -64,16 +64,16 @@ describe("login", () => {
     FormHelper.testUrl("/login");
   });
 
-  it("should save AccessToken if valid credentials are provided", () => {
+  it("should save Account if valid credentials are provided", () => {
     Http.mockOk();
     simulateValidSubmit();
     cy.getByTestId("form-error").should("not.exist");
     cy.getByTestId("spinner").should("not.exist");
     FormHelper.testUrl("/");
-    FormHelper.testLocalStorageItem("accessToken");
+    FormHelper.testLocalStorageItem("4devs-account");
   });
 
-  it("should not save AccessToken if invalid return from api", () => {
+  it("should not save Account if invalid return from api", () => {
     Http.mockInvalidData();
     simulateValidSubmit();
     FormHelper.testFormError("Aconteceu um erro. Tente novamente mais tarde.");

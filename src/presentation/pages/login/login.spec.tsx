@@ -14,7 +14,7 @@ import { Login } from "@/presentation/pages";
 import {
   ValidationStub,
   AuthenticationSpy,
-  SaveAccessTokenMock,
+  UpdateCurrentAccountMock,
   Helper,
 } from "@/presentation/test";
 import { InvalidCredentialsError } from "@/domain/errors";
@@ -22,7 +22,7 @@ import { InvalidCredentialsError } from "@/domain/errors";
 type SutTypes = {
   sut: RenderResult;
   authenticationSpy: AuthenticationSpy;
-  saveAccessTokenMock: SaveAccessTokenMock;
+  updateCurrentAccountMock: UpdateCurrentAccountMock;
 };
 
 type SutParams = {
@@ -34,17 +34,17 @@ const makeSut = (params?: SutParams): SutTypes => {
   const validationStub = new ValidationStub();
   validationStub.errorMessage = params?.validationError;
   const authenticationSpy = new AuthenticationSpy();
-  const saveAccessTokenMock = new SaveAccessTokenMock();
+  const updateCurrentAccountMock = new UpdateCurrentAccountMock();
   const sut = render(
     <Router history={history}>
       <Login
         authentication={authenticationSpy}
         validation={validationStub}
-        saveAccessToken={saveAccessTokenMock}
+        updateCurrentAccount={updateCurrentAccountMock}
       />
     </Router>
   );
-  return { sut, authenticationSpy, saveAccessTokenMock };
+  return { sut, authenticationSpy, updateCurrentAccountMock };
 };
 
 const simulateValidSubmit = async (
@@ -158,21 +158,19 @@ describe("Login Component", () => {
     Helper.testChildCount(sut, "errorWrap", 1);
   });
 
-  test("Should call saveAcessToken on success", async () => {
-    const { sut, authenticationSpy, saveAccessTokenMock } = makeSut();
+  test("Should call updateCurrentAccount on success", async () => {
+    const { sut, authenticationSpy, updateCurrentAccountMock } = makeSut();
     await simulateValidSubmit(sut);
 
-    expect(saveAccessTokenMock.accessToken).toBe(
-      authenticationSpy.account.accessToken
-    );
+    expect(updateCurrentAccountMock.account).toEqual(authenticationSpy.account);
     expect(history.length).toBe(1);
     expect(history.location.pathname).toBe("/");
   });
 
-  test("Should present error if saveAcessToken fails", async () => {
-    const { sut, saveAccessTokenMock } = makeSut();
+  test("Should present error if updateCurrentAccount fails", async () => {
+    const { sut, updateCurrentAccountMock } = makeSut();
     const error = new InvalidCredentialsError();
-    jest.spyOn(saveAccessTokenMock, "save").mockRejectedValueOnce(error);
+    jest.spyOn(updateCurrentAccountMock, "save").mockRejectedValueOnce(error);
     await simulateValidSubmit(sut);
     Helper.testTextContent(sut, "form-error", error.message);
     Helper.testChildCount(sut, "errorWrap", 1);
