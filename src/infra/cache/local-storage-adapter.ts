@@ -9,6 +9,6 @@ export class LocalStorageAdapter implements SetStorage, GetStorage {
   }
 
   get(key: string): any {
-    return JSON.parse(localStorage.getItem(key))
+    return JSON.parse(localStorage.getItem(`${this.localStoragePrefix}-${key}`))
   }
 }

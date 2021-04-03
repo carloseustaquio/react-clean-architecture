@@ -27,9 +27,10 @@ describe("LocalStorageAdapter", () => {
     const value = {
       [faker.random.word()]: faker.random.word()
     }
+    const prefix = "4devs"
     const getItemSpy = jest.spyOn(localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(value));
     const obj = sut.get(key);
     expect(obj).toEqual(value);
-    expect(getItemSpy).toHaveBeenCalledWith(key)
+    expect(getItemSpy).toHaveBeenCalledWith(`${prefix}-${key}`)
   });
 });
