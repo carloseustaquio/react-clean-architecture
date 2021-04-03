@@ -9,6 +9,6 @@ export class LocalUpdateCurrentAccount implements UpdateCurrentAccount {
     if (!account || !account.accessToken || !account.name) {
       throw new UnexpectedError();
     }
-    return this.setStorage.set("account", account);
+    this.setStorage.set("account", account);
   }
 }
