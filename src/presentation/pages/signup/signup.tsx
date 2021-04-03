@@ -7,7 +7,7 @@ import {
   FormStatus,
   SubmitButton,
 } from "@/presentation/components";
-import Context from "@/presentation/contexts/form/form-context";
+import { FormContext } from "@/presentation/contexts";
 import { Validation } from "@/presentation/protocols/validation";
 import { AddAccount, UpdateCurrentAccount } from "@/domain/usecases";
 import { Link, useHistory } from "react-router-dom";
@@ -103,7 +103,7 @@ const SignUp: React.FC<Props> = ({
   return (
     <div className={Styles.signupWrap}>
       <LoginHeader />
-      <Context.Provider value={{ state, setState }}>
+      <FormContext.Provider value={{ state, setState }}>
         <form
           data-testid="form"
           className={Styles.form}
@@ -128,7 +128,7 @@ const SignUp: React.FC<Props> = ({
           </Link>
           <FormStatus />
         </form>
-      </Context.Provider>
+      </FormContext.Provider>
       <Footer />
     </div>
   );

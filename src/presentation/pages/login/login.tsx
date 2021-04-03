@@ -8,7 +8,7 @@ import {
   FormStatus,
   SubmitButton,
 } from "@/presentation/components";
-import Context from "@/presentation/contexts/form/form-context";
+import { FormContext } from "@/presentation/contexts";
 import { Validation } from "@/presentation/protocols/validation";
 import { Authentication, UpdateCurrentAccount } from "@/domain/usecases";
 
@@ -83,7 +83,7 @@ const Login: React.FC<Props> = ({
   return (
     <div className={Styles.loginWrap}>
       <LoginHeader />
-      <Context.Provider value={{ state, setState }}>
+      <FormContext.Provider value={{ state, setState }}>
         <form
           data-testid="form"
           className={Styles.form}
@@ -102,7 +102,7 @@ const Login: React.FC<Props> = ({
           </Link>
           <FormStatus />
         </form>
-      </Context.Provider>
+      </FormContext.Provider>
       <Footer />
     </div>
   );
