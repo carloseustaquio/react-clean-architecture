@@ -12,10 +12,12 @@ describe("LocalStorageAdapter", () => {
   test("should call localStorage with correct values", async () => {
     const sut = makeSut();
     const key = faker.database.column();
-    const value = faker.random.word();
+    const value = {
+      [faker.random.word()]: faker.random.word()
+    }
     const stringfiedValue = JSON.stringify(value)
     const prefix = "4devs"
-    await sut.set(key, value);
+    sut.set(key, value);
     expect(localStorage.setItem).toHaveBeenCalledWith(`${prefix}-${key}`, stringfiedValue);
   });
 });
