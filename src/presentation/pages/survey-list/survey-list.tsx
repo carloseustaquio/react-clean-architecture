@@ -1,6 +1,7 @@
-import { Footer, Header } from "@/presentation/components";
 import React from "react";
 import Styles from "./survey-list-styles.scss";
+import { Footer, Header } from "@/presentation/components";
+import { SurveyItemEmpty } from "@/presentation/pages/survey-list/components";
 
 const SurveyList: React.FC = () => {
   return (
@@ -8,7 +9,9 @@ const SurveyList: React.FC = () => {
       <Header userName="Carlos Eustáquio" />
       <div className={Styles.contentWrap}>
         <h2>Enquetes</h2>
-        <ul></ul>
+        <ul data-testid="survey-list">
+          <SurveyItemEmpty />
+        </ul>
       </div>
       <Footer />
     </div>
