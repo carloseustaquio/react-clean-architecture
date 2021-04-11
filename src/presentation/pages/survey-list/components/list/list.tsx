@@ -1,4 +1,3 @@
-import { SurveyModel } from "@/domain/models";
 import React, { useContext } from "react";
 import {
   SurveyItemEmpty,
@@ -6,13 +5,14 @@ import {
   SurveyContext,
 } from "@/presentation/pages/survey-list/components";
 import Styles from "./list-styles.scss";
+import { LoadSurveyList } from "@/domain/usecases";
 
 const SurveyListItems: React.FC = () => {
   const { state } = useContext(SurveyContext);
   return (
     <ul className={Styles.listWrap} data-testid="survey-list">
       {state.surveys.length ? (
-        state.surveys.map((survey: SurveyModel) => (
+        state.surveys.map((survey: LoadSurveyList.Model) => (
           <SurveyItem key={survey.id} survey={survey} />
         ))
       ) : (

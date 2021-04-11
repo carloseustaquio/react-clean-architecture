@@ -5,13 +5,14 @@ import { createMemoryHistory } from "history";
 import { fireEvent, render, waitFor, screen } from "@testing-library/react";
 import { SignUp } from "@/presentation/pages";
 import { ApiContext } from "@/presentation/contexts";
-import { AddAccountSpy, Helper, ValidationStub } from "@/presentation/test/";
+import { Helper, ValidationStub } from "@/presentation/test/";
 import { EmailInUseError } from "@/domain/errors";
-import { AccountModel } from "@/domain/models";
+import { AddAccountSpy } from "@/domain/test";
+import { Authentication } from "@/domain/usecases";
 
 type SutTypes = {
   addAccountSpy: AddAccountSpy;
-  setCurrentAccountMock: (account: AccountModel) => void;
+  setCurrentAccountMock: (account: Authentication.Model) => void;
 };
 
 type SutParams = {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import React from "react";
 import faker from "faker";
 import { Router } from "react-router-dom";
@@ -6,13 +5,14 @@ import { createMemoryHistory } from "history";
 import { render, fireEvent, waitFor, screen } from "@testing-library/react";
 import { Login } from "@/presentation/pages";
 import { ApiContext } from "@/presentation/contexts";
-import { ValidationStub, AuthenticationSpy, Helper } from "@/presentation/test";
+import { ValidationStub, Helper } from "@/presentation/test";
 import { InvalidCredentialsError } from "@/domain/errors";
-import { AccountModel } from "@/domain/models";
+import { AuthenticationSpy } from "@/domain/test";
+import { AddAccount } from "@/domain/usecases";
 
 type SutTypes = {
   authenticationSpy: AuthenticationSpy;
-  setCurrentAccountMock: (account: AccountModel) => void;
+  setCurrentAccountMock: (account: AddAccount.Model) => void;
 };
 
 type SutParams = {
