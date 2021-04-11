@@ -9,28 +9,41 @@ describe("LocalStorageAdapter", () => {
     localStorage.clear();
   });
 
-  test("should call localStorage.setItem with correct values", async () => {
+  test("should call localStorage.setItem with correct values if value is defined", async () => {
     const sut = makeSut();
     const key = faker.database.column();
     const value = {
-      [faker.random.word()]: faker.random.word()
-    }
-    const stringValue = JSON.stringify(value)
-    const prefix = "4devs"
+      [faker.random.word()]: faker.random.word(),
+    };
+    const stringValue = JSON.stringify(value);
+    const prefix = "4devs";
     sut.set(key, value);
-    expect(localStorage.setItem).toHaveBeenCalledWith(`${prefix}-${key}`, stringValue);
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      `${prefix}-${key}`,
+      stringValue
+    );
+  });
+
+  test("should call localStorage.removeItem with correct value is not defined", async () => {
+    const sut = makeSut();
+    const key = faker.database.column();
+    const prefix = "4devs";
+    sut.set(key, undefined);
+    expect(localStorage.removeItem).toHaveBeenCalledWith(`${prefix}-${key}`);
   });
 
   test("should call localStorage.getItem with correct value", async () => {
     const sut = makeSut();
     const key = faker.database.column();
     const value = {
-      [faker.random.word()]: faker.random.word()
-    }
-    const prefix = "4devs"
-    const getItemSpy = jest.spyOn(localStorage, 'getItem').mockReturnValueOnce(JSON.stringify(value));
+      [faker.random.word()]: faker.random.word(),
+    };
+    const prefix = "4devs";
+    const getItemSpy = jest
+      .spyOn(localStorage, "getItem")
+      .mockReturnValueOnce(JSON.stringify(value));
     const obj = sut.get(key);
     expect(obj).toEqual(value);
-    expect(getItemSpy).toHaveBeenCalledWith(`${prefix}-${key}`)
+    expect(getItemSpy).toHaveBeenCalledWith(`${prefix}-${key}`);
   });
 });
