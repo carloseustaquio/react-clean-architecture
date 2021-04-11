@@ -1,15 +1,28 @@
-import React, { memo } from "react";
+import React, { memo, useContext } from "react";
 import Styles from "./header-styles.scss";
 import { Logo } from "@/presentation/components";
+import { ApiContext } from "@/presentation/contexts";
+import { useHistory } from "react-router";
 
 const Header: React.FC = () => {
+  const { setCurrentAccount } = useContext(ApiContext);
+  const history = useHistory();
+  const logout = (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>
+  ): void => {
+    event.preventDefault();
+    setCurrentAccount(undefined);
+    history.replace("/login");
+  };
   return (
     <header className={Styles.headerWrap}>
       <div className={Styles.headerContent}>
         <Logo />
         <div className={Styles.logoutWrap}>
           <span>Carlos Eustáquio</span>
-          <a href="#">Sair</a>
+          <a data-testid="logout" href="#" onClick={logout}>
+            Sair
+          </a>
         </div>
       </div>
     </header>
