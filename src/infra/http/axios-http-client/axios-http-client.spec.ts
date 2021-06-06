@@ -35,11 +35,16 @@ describe("AxiosHttpClient", () => {
     });
     test("should return correct error on axios.post", async () => {
       const { sut, mockedAxios } = makeSut();
+      const axiosResponse = mockHttpResponse();
       mockedAxios.post.mockRejectedValueOnce({
-        response: mockHttpResponse(),
+        response: axiosResponse,
       });
-      const promise = sut.post(mockPostRequest());
-      expect(promise).toEqual(mockedAxios.post.mock.results[0].value);
+      const httpResponse = await sut.post(mockPostRequest());
+
+      expect(httpResponse).toEqual({
+        statusCode: axiosResponse.status,
+        body: axiosResponse.data,
+      });
     });
   });
 
@@ -48,7 +53,9 @@ describe("AxiosHttpClient", () => {
       const { sut, mockedAxios } = makeSut();
       const request = mockGetRequest();
       sut.get(request);
-      expect(mockedAxios.get).toHaveBeenCalledWith(request.url, { headers: request.headers });
+      expect(mockedAxios.get).toHaveBeenCalledWith(request.url, {
+        headers: request.headers,
+      });
     });
     test("should return correct response on axios.get", async () => {
       const { sut, mockedAxios } = makeSut();
@@ -59,13 +66,19 @@ describe("AxiosHttpClient", () => {
         body: axiosResponse.data,
       });
     });
-    test("should return correct error on axios.post", async () => {
+    test("should return correct error on axios.post and ignore api data", async () => {
       const { sut, mockedAxios } = makeSut();
+      const axiosResponse = mockHttpResponse();
+
       mockedAxios.get.mockRejectedValueOnce({
-        response: mockHttpResponse(),
+        response: axiosResponse,
       });
-      const promise = sut.get(mockGetRequest());
-      expect(promise).toEqual(mockedAxios.get.mock.results[0].value);
+      const httpResponse = await sut.get(mockGetRequest());
+
+      expect(httpResponse).toEqual({
+        statusCode: axiosResponse.status,
+        body: undefined,
+      });
     });
   });
 });
